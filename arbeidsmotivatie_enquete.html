@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enquête Arbeidsmotivatie</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-dark: #0F6E56;
+    --bg: #f8f8f6;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.12);
+    --border-strong: rgba(0,0,0,0.22);
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #9a9990;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a18;
+      --surface: #242422;
+      --border: rgba(255,255,255,0.1);
+      --border-strong: rgba(255,255,255,0.2);
+      --text-primary: #f0efe9;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #6e6d68;
+      --teal-light: #04342C;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .form-header {
+    margin-bottom: 1.75rem;
+  }
+
+  .form-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+  }
+
+  .form-header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+  }
+
+  .progress-track {
+    background: var(--border);
+    border-radius: 99px;
+    height: 4px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin: 1.75rem 0 0.75rem;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.125rem;
+    margin-bottom: 10px;
+  }
+
+  .q-num {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-bottom: 3px;
+  }
+
+  .q-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-primary);
+    margin-bottom: 0.875rem;
+  }
+
+  .rating-row {
+    display: flex;
+    gap: 7px;
+  }
+
+  .rating-btn {
+    flex: 1;
+    height: 42px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .rating-btn:active {
+    transform: scale(0.96);
+  }
+
+  .rating-btn.selected {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+
+  .scale-labels span {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .field-group {
+    margin-bottom: 10px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 7px;
+  }
+
+  .gender-opts {
+    display: flex;
+    gap: 8px;
+  }
+
+  .gender-btn {
+    flex: 1;
+    height: 42px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .gender-btn.selected {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    height: 44px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    padding: 0 14px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--surface);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input[type="number"]:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.15);
+  }
+
+  .submit-btn {
+    display: block;
+    width: 100%;
+    height: 52px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 1.75rem;
+    transition: opacity 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .submit-btn:not(:disabled):active {
+    opacity: 0.85;
+    transform: scale(0.99);
+  }
+
+  .success-screen {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--teal-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+  }
+
+  .success-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke: var(--teal);
+  }
+
+  .success-screen h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .success-screen p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+  <div class="form-header">
+    <h1>Arbeidsmotivatie enquête</h1>
+    <p>Geef elke stelling een score van 1 (niet belangrijk) t/m 5 (zeer belangrijk).</p>
+  </div>
+
+  <div class="progress-meta">
+    <span id="prog-text">0 van 15 beantwoord</span>
+    <span id="prog-pct">0%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="prog-bar"></div>
+  </div>
+
+  <div id="questions"></div>
+
+  <p class="section-label">Persoonsgegevens</p>
+
+  <div class="field-group">
+    <span class="field-label">Geslacht</span>
+    <div class="gender-opts">
+      <button class="gender-btn" onclick="selectGender(this, 'Man')">Man</button>
+      <button class="gender-btn" onclick="selectGender(this, 'Vrouw')">Vrouw</button>
+      <button class="gender-btn" onclick="selectGender(this, 'Anders')">Anders</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label" for="byear">Geboortejaar</label>
+    <input type="number" id="byear" placeholder="bijv. 1990" min="1940" max="2010" inputmode="numeric" />
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="submitForm()">Versturen</button>
+
+</div>
+
+<script>
+const stellingen = [
+  "Omdat deze baan het mogelijk maakt veel geld te verdienen",
+  "Omdat deze baan past in mijn loopbaanplannen",
+  "Omdat ik het werk heel leuk vind om te doen",
+  "Omdat het van mij verwacht wordt",
+  "Omdat ik in mijn werk de beste wil zijn",
+  "Omdat ik plezier heb in mijn werk",
+  "Ik heb deze baan vanwege het salaris",
+  "Omdat deze baan aansluit bij de waarden die ik in het leven belangrijk vind",
+  "Omdat het mogelijkheden biedt om werk en privé te kunnen combineren",
+  "Vanwege de vaste aanstelling",
+  "Vanwege de bereikbaarheid van de locatie",
+  "Het interessante karakter van het werk",
+  "Inspraakmogelijkheden bij beslissingen die mijn werk betreffen",
+  "Deze organisatie lijkt het belangrijker te vinden dat ik de procedures volg",
+  "In mijn werk moeten zelfs de kleinste dingen worden besproken met een hoger"
+];
+
+const answers = new Array(stellingen.length).fill(0);
+let selectedGender = '';
+
+function renderQuestions() {
+  const container = document.getElementById('questions');
+  stellingen.forEach((stelling, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.innerHTML = `
+      <div class="q-num">Stelling ${i + 1}</div>
+      <div class="q-text">${stelling}</div>
+      <div class="rating-row" id="row-${i}">
+        ${[1,2,3,4,5].map(v =>
+          `<button class="rating-btn" onclick="rate(${i}, ${v}, this)" aria-label="Score ${v}">${v}</button>`
+        ).join('')}
+      </div>
+      <div class="scale-labels">
+        <span>Niet belangrijk</span>
+        <span>Zeer belangrijk</span>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function rate(qIndex, val, btn) {
+  answers[qIndex] = val;
+  const row = document.getElementById('row-' + qIndex);
+  row.querySelectorAll('.rating-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i + 1 === val);
+  });
+  updateProgress();
+}
+
+function selectGender(btn, val) {
+  selectedGender = val;
+  btn.closest('.gender-opts').querySelectorAll('.gender-btn').forEach(b => {
+    b.classList.toggle('selected', b === btn);
+  });
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a > 0).length;
+  const pct = Math.round((answered / stellingen.length) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-text').textContent = `${answered} van ${stellingen.length} beantwoord`;
+}
+
+function submitForm() {
+  const unanswered = answers.filter(a => a === 0).length;
+  if (unanswered > 0) {
+    alert(`Er zijn nog ${unanswered} stelling${unanswered > 1 ? 'en' : ''} niet beantwoord.`);
+    return;
+  }
+  if (!selectedGender) {
+    alert('Selecteer je geslacht.');
+    return;
+  }
+  const byear = document.getElementById('byear').value;
+  if (!byear || parseInt(byear) < 1940 || parseInt(byear) > 2010) {
+    alert('Vul een geldig geboortejaar in (1940–2010).');
+    return;
+  }
+
+  document.getElementById('app').innerHTML = `
+    <div class="success-screen">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h2>Bedankt voor je deelname!</h2>
+      <p>Je antwoorden zijn succesvol ontvangen.<br>Je kunt dit venster nu sluiten.</p>
+    </div>
+  `;
+}
+
+renderQuestions();
+</script>
+</body>
+</html>
